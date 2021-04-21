@@ -1,24 +1,32 @@
-import logo from './logo.svg';
+import React from 'react';
+import { Route, Switch, Redirect } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import Home from "./components/home";
+import NavBar from "./components/navBar";
+import Footer from "./components/footer";
+import SignUp from './components/signUp';
+import Login from './components/login';
+import Dashboard from './components/dashboard';
+import "react-toastify/dist/ReactToastify.css";
 import './App.css';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Fragment>
+      <ToastContainer position="top-center" newestOnTop />
+      <NavBar />
+      <Switch>
+        <Route path="/home" exact component={Home} />
+        <Route path="/sign-up" exact component={SignUp} />
+        <Route path="/login" exact component={Login} />
+        <Route path="/dashboard" exact component={Dashboard} />
+
+        <Redirect from="/" exact to="/home" />
+        <Redirect to="/not-found" />
+      </Switch>
+      <Footer />
+    </React.Fragment>
   );
 }
 
