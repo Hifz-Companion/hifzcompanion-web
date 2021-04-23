@@ -144,6 +144,20 @@ class SideBar extends Component {
               <a style={{
                           textDecoration: "none",
                         }}
+                        href="/dashboard"
+                      >
+                <ListItem button>
+                  <ListItemIcon><LibraryBooksIcon color="secondary"/></ListItemIcon>
+                  <ListItemText primary="Dashboard" />
+                  {/* {sideMenu.openFurther ? <ExpandLess /> : <ExpandMore />} */}
+                </ListItem>
+              
+                </a>
+              </List>
+              <List style={{ padding: "0px" }}>
+              <a style={{
+                          textDecoration: "none",
+                        }}
                         href="/questionbank"
                       >
                 <ListItem button>

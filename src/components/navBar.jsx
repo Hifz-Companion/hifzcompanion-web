@@ -130,6 +130,18 @@ const NavBar = () => {
             )}
           </div>
           <div className={classes.sectionDesktop}>
+            {!signedIn && (
+              <Button
+                color="inherit"
+                component={Link}
+                to="/dashboard"
+                style={{ marginRight: "10px" }}
+              >
+                <strong>Dashboard</strong>
+              </Button>
+            )}
+          </div>
+          <div className={classes.sectionDesktop}>
             {signedIn && (
               <IconButton
                 edge="end"

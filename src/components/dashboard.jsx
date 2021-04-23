@@ -1,9 +1,9 @@
 import React from 'react';
 import Grid from "@material-ui/core/Grid";
-import { Button, CardContent, Typography, Card, CardActions } from '@material-ui/core';
+import { Button, CardContent, Typography, Card, CardActions, Divider } from '@material-ui/core';
 import Joi from 'joi-browser';
 import Form from './common/form';
-import { getPlans } from '../utils/getPlans';
+import { getJuzPlans, getPlans, getSurahPlans } from '../utils/getPlans';
 import { getJuzs } from '../utils/getTargets';
 import firebase from "firebase/app";
 import { toast } from 'react-toastify';
@@ -6848,9 +6848,10 @@ class Dashboard extends Form {
         event.preventDefault();
         const { user } = this.state;
         const { target, plan } = this.state.data;
-        const { surahs, pages } = this.state.quranMeta;
+        const { surahs, pages, juzs } = this.state.quranMeta;
         const surahsRef = surahs.references;
         const pagesRef = pages.references;
+        const juzsRef = juzs.references;
         const userId = user.uid;
         let cards = [];
         let dateNow = new Date();
@@ -6864,6 +6865,7 @@ class Dashboard extends Form {
                     let card = {
                         id: x+1,
                         pageNo: x+1,
+                        title: `Quran Page ${x+1}`,
                         surah: {id: pagesRef[x].surah, name: surahsRef[pagesRef[x].surah -1].englishName },
                         ayah: pagesRef[x].ayah,
                         dueDate: midNight + (dayToMemo * 86400000),
@@ -6885,10 +6887,11 @@ class Dashboard extends Form {
                     let card = {
                         id: x+1,
                         pageNo: x+1,
+                        title: `Quran Page ${x+1}`,
                         surah: {id: pagesRef[x].surah, name: surahsRef[pagesRef[x].surah -1].englishName },
                         ayah: pagesRef[x].ayah,
                         dueDate: midNight + ((x+1) * 86400000),
-                        // dueDate: Date.now() + ((x*5) * 60000),
+                        // dueDate: Date.now() + ((x*2) * 60000),
                         dueDateInWords: new Date(midNight + ((x+1) * 86400000)).toString(),
                         lapses: 0,
                         interval: 1,
@@ -6917,6 +6920,7 @@ class Dashboard extends Form {
                     let card = {
                         id: x+1,
                         pageNo: x+1,
+                        title: `Quran Page ${x+1}`,
                         surah: {id: pagesRef[x].surah, name: surahsRef[pagesRef[x].surah -1].englishName },
                         ayah: pagesRef[x].ayah,
                         dueDate: midNight + (dayToMemo * 86400000),
@@ -6949,8 +6953,447 @@ class Dashboard extends Form {
                     let card = {
                         id: x+1,
                         pageNo: x+1,
+                        title: `Quran Page ${x+1}`,
                         surah: {id: pagesRef[x].surah, name: surahsRef[pagesRef[x].surah -1].englishName },
                         ayah: pagesRef[x].ayah,
+                        dueDate: midNight + (dayToMemo * 86400000),
+                        // dueDate: Date.now() + ((x*5) * 60000),
+                        dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
+                        lapses: 0,
+                        interval: 1,
+                        ease: 2.5,
+                        phase: "memorizing",
+
+                    }
+
+                    cards.push(card);
+                }
+            }
+
+            if(plan === "fiveYears") {
+                let initialDaysToMemoList = [];
+                let noOfDaysToMemo = 1409;
+
+                for(let i=0; i<noOfDaysToMemo; i++) {
+                    if((i+1)%2 !== 0) {
+                        initialDaysToMemoList.push(i+1)
+                    }
+                }
+
+                console.log(initialDaysToMemoList)
+
+                const initialListLength = initialDaysToMemoList.length;
+                let daysToMemoList = [];
+                for(let x=0; x<initialListLength; x++) {
+                    if((initialDaysToMemoList[x])%7 !== 0) {
+                        daysToMemoList.push(initialDaysToMemoList[x]);
+                    }
+                }
+
+                console.log("days to memo list", daysToMemoList)
+
+                for(let x=0; x<pages.count; x++) {
+                    let dayToMemo = daysToMemoList[x];
+                    let card = {
+                        id: x+1,
+                        pageNo: x+1,
+                        title: `Quran Page ${x+1}`,
+                        surah: {id: pagesRef[x].surah, name: surahsRef[pagesRef[x].surah -1].englishName },
+                        ayah: pagesRef[x].ayah,
+                        dueDate: midNight + (dayToMemo * 86400000),
+                        // dueDate: Date.now() + ((x*5) * 60000),
+                        dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
+                        lapses: 0,
+                        interval: 1,
+                        ease: 2.5,
+                        phase: "memorizing",
+
+                    }
+
+                    cards.push(card);
+                }
+            }
+
+            if(plan === "sixYears") {
+                let daysToMemoList = [];
+                let noOfDaysToMemo = 1812;
+
+                for(let i=0; i<noOfDaysToMemo; i++) {
+                    if(i === 0){
+                        daysToMemoList.push(i+1)
+                    }
+                    if((i+1)%3 === 0) {
+                        daysToMemoList.push(i+2)
+                    }
+                }
+                console.log("days to memo list", daysToMemoList)
+
+                for(let x=0; x<pages.count; x++) {
+                    let dayToMemo = daysToMemoList[x];
+                    let card = {
+                        id: x+1,
+                        pageNo: x+1,
+                        title: `Quran Page ${x+1}`,
+                        surah: {id: pagesRef[x].surah, name: surahsRef[pagesRef[x].surah -1].englishName },
+                        ayah: pagesRef[x].ayah,
+                        dueDate: midNight + (dayToMemo * 86400000),
+                        // dueDate: Date.now() + ((x*5) * 60000),
+                        dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
+                        lapses: 0,
+                        interval: 1,
+                        ease: 2.5,
+                        phase: "memorizing",
+
+                    }
+
+                    cards.push(card);
+                }
+            }
+
+        }
+
+        if(target === "juz") {
+            const { juz } = this.state.data;
+            let juzPages = 20;
+            if(juz === "1") {
+                juzPages = 21;
+            } else if (juz === "30") {
+                juzPages = 23;
+            }
+
+            let firstPageOfJuz;
+
+            for(let i=0; i<pagesRef.length; i++) {
+                if(pagesRef[i].surah === juzsRef[juz-1].surah && pagesRef[i].ayah === juzsRef[juz-1].ayah) {
+                    firstPageOfJuz = i+1;
+                }
+            }
+
+            
+            if(plan === "twoWeeks") {
+                for(let x=0; x<juzPages; x++) {
+                    const dayToMemo = Math.round((x+1) / 2);
+                    let card = {
+                        id: x+1,
+                        pageNo: firstPageOfJuz + x,
+                        title: `Juz ${juz}, Page ${x+1}`,
+                        surah: {id: juzsRef[x].surah, name: surahsRef[juzsRef[x].surah -1].englishName },
+                        ayah: juzsRef[x].ayah,
+                        dueDate: midNight + (dayToMemo * 86400000),
+                        // dueDate: Date.now() + ((x*5) * 60000),
+                        dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
+                        lapses: 0,
+                        interval: 1,
+                        ease: 2.5,
+                        phase: "memorizing",
+
+                    }
+
+                    cards.push(card);
+                }
+            }
+            
+            if(plan === "threeWeeks") {
+                for(let x=0; x<juzPages; x++) {
+                    let card = {
+                        id: x+1,
+                        pageNo: firstPageOfJuz + x,
+                        title: `Juz ${juz}, Page ${x+1}`,
+                        surah: {id: juzsRef[x].surah, name: surahsRef[juzsRef[x].surah -1].englishName },
+                        ayah: juzsRef[x].ayah,
+                        dueDate: midNight + ((x+1) * 86400000),
+                        // dueDate: Date.now() + ((x*2) * 60000),
+                        dueDateInWords: new Date(midNight + ((x+1) * 86400000)).toString(),
+                        lapses: 0,
+                        interval: 1,
+                        ease: 2.5,
+                        phase: "memorizing",
+
+                    }
+
+                    cards.push(card);
+                }
+            }
+            
+            if(plan === "fiveWeeks") {
+                let daysToMemoList = [];
+                let noOfDaysToMemo = (juzPages /2) * 3
+
+                for(let i=0; i<noOfDaysToMemo; i++) {
+                    if((i+1)%3 !== 0) {
+                        daysToMemoList.push(i+1)
+                    }
+                }
+                console.log("days to memo list", daysToMemoList)
+
+                for(let x=0; x<juzPages; x++) {
+                    let dayToMemo = daysToMemoList[x];
+                    let card = {
+                        id: x+1,
+                        pageNo: firstPageOfJuz + x,
+                        title: `Juz ${juz}, Page ${x+1}`,
+                        surah: {id: juzsRef[x].surah, name: surahsRef[juzsRef[x].surah -1].englishName },
+                        ayah: juzsRef[x].ayah,
+                        dueDate: midNight + (dayToMemo * 86400000),
+                        // dueDate: Date.now() + ((x*5) * 60000),
+                        dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
+                        lapses: 0,
+                        interval: 1,
+                        ease: 2.5,
+                        phase: "memorizing",
+
+                    }
+
+                    cards.push(card);
+                }
+            }
+
+            if(plan === "sixWeeks") {
+                let daysToMemoList = [];
+                let noOfDaysToMemo = juzPages * 2;
+
+                for(let i=0; i<noOfDaysToMemo; i++) {
+                    if((i+1)%2 !== 0) {
+                        daysToMemoList.push(i+1)
+                    }
+                }
+                console.log("days to memo list", daysToMemoList)
+
+                for(let x=0; x<juzPages; x++) {
+                    let dayToMemo = daysToMemoList[x];
+                    let card = {
+                        id: x+1,
+                        pageNo: firstPageOfJuz + x,
+                        title: `Juz ${juz}, Page ${x+1}`,
+                        surah: {id: juzsRef[x].surah, name: surahsRef[juzsRef[x].surah -1].englishName },
+                        ayah: juzsRef[x].ayah,
+                        dueDate: midNight + (dayToMemo * 86400000),
+                        // dueDate: Date.now() + ((x*5) * 60000),
+                        dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
+                        lapses: 0,
+                        interval: 1,
+                        ease: 2.5,
+                        phase: "memorizing",
+
+                    }
+
+                    cards.push(card);
+                }
+            }
+
+            if(plan === "sevenWeeks") {
+                let initialDaysToMemoList = [];
+                let noOfDaysToMemo = (juzPages/3) * 7;
+
+                for(let i=0; i<noOfDaysToMemo; i++) {
+                    if((i+1)%2 !== 0) {
+                        initialDaysToMemoList.push(i+1)
+                    }
+                }
+
+                console.log(initialDaysToMemoList)
+
+                const initialListLength = initialDaysToMemoList.length;
+                let daysToMemoList = [];
+                for(let x=0; x<initialListLength; x++) {
+                    if((initialDaysToMemoList[x])%7 !== 0) {
+                        daysToMemoList.push(initialDaysToMemoList[x]);
+                    }
+                }
+
+                console.log("days to memo list", daysToMemoList)
+
+                for(let x=0; x<juzPages; x++) {
+                    let dayToMemo = daysToMemoList[x];
+                    let card = {
+                        id: x+1,
+                        pageNo: firstPageOfJuz + x,
+                        title: `Juz ${juz}, Page ${x+1}`,
+                        surah: {id: juzsRef[x].surah, name: surahsRef[juzsRef[x].surah -1].englishName },
+                        ayah: juzsRef[x].ayah,
+                        dueDate: midNight + (dayToMemo * 86400000),
+                        // dueDate: Date.now() + ((x*5) * 60000),
+                        dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
+                        lapses: 0,
+                        interval: 1,
+                        ease: 2.5,
+                        phase: "memorizing",
+
+                    }
+
+                    cards.push(card);
+                }
+            }
+
+            if(plan === "nineWeeks") {
+                let daysToMemoList = [];
+                let noOfDaysToMemo = juzPages * 3;
+
+                for(let i=0; i<noOfDaysToMemo; i++) {
+                    if(i === 0){
+                        daysToMemoList.push(i+1)
+                    }
+                    if((i+1)%3 === 0) {
+                        daysToMemoList.push(i+2)
+                    }
+                }
+                console.log("days to memo list", daysToMemoList)
+
+                for(let x=0; x<juzPages; x++) {
+                    let dayToMemo = daysToMemoList[x];
+                    let card = {
+                        id: x+1,
+                        pageNo: firstPageOfJuz + x,
+                        title: `Juz ${juz}, Page ${x+1}`,
+                        surah: {id: juzsRef[x].surah, name: surahsRef[juzsRef[x].surah -1].englishName },
+                        ayah: juzsRef[x].ayah,
+                        dueDate: midNight + (dayToMemo * 86400000),
+                        // dueDate: Date.now() + ((x*5) * 60000),
+                        dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
+                        lapses: 0,
+                        interval: 1,
+                        ease: 2.5,
+                        phase: "memorizing",
+
+                    }
+
+                    cards.push(card);
+                }
+            }
+        }
+
+        if(target === "surah") {
+            const { surah } = this.state.data;
+            const surahPagesList = pagesRef.filter(page => page.surah === Number(surah));
+            let surahPages = surahPagesList.length;
+            let firstPageOfSurah;
+
+            if(surahPagesList.length === 0) {
+                surahPages = 1;
+                if(surah < 91){
+                    for(let i=0; i<pagesRef.length; i++) {
+                        if(pagesRef[i].surah === surah-2) {
+                            firstPageOfSurah = i+1;
+                        }
+                    }
+                } else {
+                    for(let i=0; i<pagesRef.length; i++) {
+                        if(pagesRef[i].surah === surah-1) {
+                            firstPageOfSurah = i+1;
+                        }
+                    }
+                }
+
+            } else {
+                for(let i=0; i<pagesRef.length; i++) {
+                    if(pagesRef[i].surah === surahPagesList[0].surah && pagesRef[i].ayah === surahPagesList[0].ayah) {
+                        firstPageOfSurah = i+1;
+                    }
+                }
+            }
+            
+
+
+            if(plan === "twoP/D") {
+                for(let x=0; x<surahPages; x++) {
+                    const dayToMemo = Math.round((x+1) / 2);
+                    let card = {
+                        id: x+1,
+                        pageNo: firstPageOfSurah + x,
+                        title: `${surah}. ${surahsRef[surah-1].englishName}, Page ${x+1}`,
+                        surah: {id: surah, name: surahsRef[surah-1].englishName },
+                        ayah: pagesRef[firstPageOfSurah + x - 1] ? pagesRef[firstPageOfSurah + x - 1].ayah : 1,
+                        // dueDate: midNight + (dayToMemo * 86400000),
+                        dueDate: Date.now() + ((x*5) * 60000),
+                        dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
+                        lapses: 0,
+                        interval: 1,
+                        ease: 2.5,
+                        phase: "memorizing",
+
+                    }
+
+                    cards.push(card);
+                }
+            }
+
+            if(plan === "oneP/D") {
+                for(let x=0; x<surahPages; x++) {
+                    let card = {
+                        id: x+1,
+                        pageNo: firstPageOfSurah + x,
+                        title: `${surah}. ${surahsRef[surah-1].englishName}, Page ${x+1}`,
+                        surah: {id: surah, name: surahsRef[surah-1].englishName },
+                        ayah: pagesRef[firstPageOfSurah + x - 1] ? pagesRef[firstPageOfSurah + x - 1].ayah : 1,
+                        dueDate: midNight + ((x+1) * 86400000),
+                        // dueDate: Date.now() + ((x*2) * 60000),
+                        dueDateInWords: new Date(midNight + ((x+1) * 86400000)).toString(),
+                        lapses: 0,
+                        interval: 1,
+                        ease: 2.5,
+                        phase: "memorizing",
+
+                    }
+
+                    cards.push(card);
+                }
+            }
+
+            if(plan === "oneP/2D") {
+                let daysToMemoList = [];
+                let noOfDaysToMemo = surahPages * 2;
+
+                for(let i=0; i<noOfDaysToMemo; i++) {
+                    if((i+1)%2 !== 0) {
+                        daysToMemoList.push(i+1)
+                    }
+                }
+                console.log("days to memo list", daysToMemoList)
+
+                for(let x=0; x<surahPages; x++) {
+                    let dayToMemo = daysToMemoList[x];
+                    let card = {
+                        id: x+1,
+                        pageNo: firstPageOfSurah + x,
+                        title: `${surah}. ${surahsRef[surah-1].englishName}, Page ${x+1}`,
+                        surah: {id: surah, name: surahsRef[surah-1].englishName },
+                        ayah: pagesRef[firstPageOfSurah + x - 1] ? pagesRef[firstPageOfSurah + x - 1].ayah : 1,
+                        dueDate: midNight + (dayToMemo * 86400000),
+                        // dueDate: Date.now() + ((x*5) * 60000),
+                        dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
+                        lapses: 0,
+                        interval: 1,
+                        ease: 2.5,
+                        phase: "memorizing",
+
+                    }
+
+                    cards.push(card);
+                }
+            }
+
+            if(plan === "oneP/3D") {
+                let daysToMemoList = [];
+                let noOfDaysToMemo = surahPages * 3;
+
+                for(let i=0; i<noOfDaysToMemo; i++) {
+                    if(i === 0){
+                        daysToMemoList.push(i+1)
+                    }
+                    if((i+1)%3 === 0) {
+                        daysToMemoList.push(i+2)
+                    }
+                }
+                console.log("days to memo list", daysToMemoList)
+
+                for(let x=0; x<surahPages; x++) {
+                    let dayToMemo = daysToMemoList[x];
+                    let card = {
+                        id: x+1,
+                        pageNo: firstPageOfSurah + x,
+                        title: `${surah}. ${surahsRef[surah-1].englishName}, Page ${x+1}`,
+                        surah: {id: surah, name: surahsRef[surah-1].englishName },
+                        ayah: pagesRef[firstPageOfSurah + x - 1] ? pagesRef[firstPageOfSurah + x - 1].ayah : 1,
                         dueDate: midNight + (dayToMemo * 86400000),
                         // dueDate: Date.now() + ((x*5) * 60000),
                         dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
@@ -6976,9 +7419,8 @@ class Dashboard extends Form {
             console.log(user);
 
             user.memos.push({
-                target: "quran",
-                name: "Entire Quran Memorization",
-                plan: "oneYear",
+                target: target,
+                plan: plan,
                 cards: cards,
             })
             console.log(user)
@@ -7007,7 +7449,19 @@ class Dashboard extends Form {
         }
     ]
 
-    plans = getPlans();
+    plans = () => {
+        const { target } = this.state.data;
+        if(target === "quran") {
+           return  getPlans();
+        } else if(target === "juz") {
+            return getJuzPlans();
+        } else if(target === "surah") {
+            return getSurahPlans();
+        } else {
+            toast.error("Something went wrong");
+        }
+    }
+
     juzs = getJuzs();
     surahs = () => {
         const surahs = [];
@@ -7081,17 +7535,21 @@ class Dashboard extends Form {
                     </Grid>    
                 )
             }
-            return dueCards.map(card => <Grid item xs={5} lg={3} key={card.id} style={{ margin: "0 auto"}}>
+            return dueCards.map(card => <Grid item xs={7} sm={5} lg={3} key={card.id} style={{ margin: "0 auto"}}>
                 <Card variant="outlined" style={{  margin: "20px"}}>
                     <CardContent>
                         <Typography variant="h6">
-                            Quran page {card.pageNo}
+                            {card.title}
                         </Typography>
+                        <Divider /> < br/>
                         <Typography variant="body1">
                             <strong>Surah</strong>: {card.surah.id}. {card.surah.name} 
                         </Typography>
                         <Typography variant="body1">
                             <strong>1st Ayah</strong>: {card.ayah}
+                        </Typography>
+                        <Typography variant="body1">
+                            <strong>Quran Page</strong>: {card.pageNo}
                         </Typography>
                     </CardContent>
                     <CardActions>
@@ -7117,12 +7575,13 @@ class Dashboard extends Form {
                     </Grid>    
                 )
             }
-            return dueCards.map(card => <Grid item xs={9} sm={7} md={5}  key={card.id} style={{ margin: "0 auto"}}>
+            return dueCards.map(card => <Grid item xs={11} sm={7} md={5}  key={card.id} style={{ margin: "0 auto"}}>
                 <Card variant="outlined" style={{  margin: "20px"}}>
                     <CardContent>
                         <Typography variant="h6">
-                            Quran page {card.pageNo}
+                            {card.title}
                         </Typography>
+                        <Divider />
                         <Typography variant="body1">
                             <strong>Surah</strong>: {card.surah.id}. {card.surah.name} 
                         </Typography>
@@ -7233,7 +7692,7 @@ class Dashboard extends Form {
     }
 
     render() { 
-        const { user, userMemos } = this.state;
+        const { user, userMemos, data } = this.state;
         
         return ( 
             <React.Fragment>
@@ -7259,10 +7718,10 @@ class Dashboard extends Form {
                             this.targets
                         )}
                         {this.renderTargetDetails()}
-                        {this.renderSelect(
+                        {data.target && this.renderSelect(
                             "plan",
                             "Choose Plan",
-                            this.plans
+                            this.plans()
                             )}
                         {this.renderSubmitButton("Start memorizing")}
                     </form>
