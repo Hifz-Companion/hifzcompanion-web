@@ -21,7 +21,7 @@ class Dashboard extends Form {
         errors: {},
         quranMeta: {},
         user: {},
-        userMemos: [],
+        userMemo: [],
      }
 
     schema = {
@@ -6831,7 +6831,7 @@ class Dashboard extends Form {
             
             firebase.firestore().collection("users").doc(userId).get()
             .then(doc => {
-                // const userMemos = [...doc.data().memos];
+                // const userMemo = [...doc.data().memo];
                 const userDetails = doc.data()
                 this.setState({ userDetails });
             })
@@ -6869,7 +6869,7 @@ class Dashboard extends Form {
                         surah: {id: pagesRef[x].surah, name: surahsRef[pagesRef[x].surah -1].englishName },
                         ayah: pagesRef[x].ayah,
                         dueDate: midNight + (dayToMemo * 86400000),
-                        // dueDate: Date.now() + ((x*5) * 60000),
+                        // dueDate: Date.now() + ((x*2) * 60000),
                         dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
                         lapses: 0,
                         interval: 1,
@@ -7266,30 +7266,40 @@ class Dashboard extends Form {
             const { surah } = this.state.data;
             const surahPagesList = pagesRef.filter(page => page.surah === Number(surah));
             let surahPages = surahPagesList.length;
+            console.log(surahPages)
             let firstPageOfSurah;
 
             if(surahPagesList.length === 0) {
                 surahPages = 1;
-                if(surah < 91){
+                if(surah > 90){
                     for(let i=0; i<pagesRef.length; i++) {
                         if(pagesRef[i].surah === surah-2) {
                             firstPageOfSurah = i+1;
+                            console.log(firstPageOfSurah)
+                        } else if(pagesRef[i].surah === surah-1) {
+                            firstPageOfSurah = i+1;
+                            console.log(firstPageOfSurah)
+                        }
+                    }
+                } 
+            } else {
+                if(surahPagesList[0].ayah !== 1) {
+                    surahPages = surahPages + 1;
+                    for(let i=0; i<pagesRef.length; i++) {
+                        if(pagesRef[i].surah === surahPagesList[0].surah && pagesRef[i].ayah === surahPagesList[0].ayah) {
+                            firstPageOfSurah = i;
+                            console.log(firstPageOfSurah)
                         }
                     }
                 } else {
                     for(let i=0; i<pagesRef.length; i++) {
-                        if(pagesRef[i].surah === surah-1) {
+                        if(pagesRef[i].surah === surahPagesList[0].surah && pagesRef[i].ayah === surahPagesList[0].ayah) {
                             firstPageOfSurah = i+1;
+                            console.log(firstPageOfSurah)
                         }
                     }
                 }
-
-            } else {
-                for(let i=0; i<pagesRef.length; i++) {
-                    if(pagesRef[i].surah === surahPagesList[0].surah && pagesRef[i].ayah === surahPagesList[0].ayah) {
-                        firstPageOfSurah = i+1;
-                    }
-                }
+                
             }
             
 
@@ -7302,8 +7312,7 @@ class Dashboard extends Form {
                         pageNo: firstPageOfSurah + x,
                         title: `${surah}. ${surahsRef[surah-1].englishName}, Page ${x+1}`,
                         surah: {id: surah, name: surahsRef[surah-1].englishName },
-                        ayah: pagesRef[firstPageOfSurah + x - 1] ? pagesRef[firstPageOfSurah + x - 1].ayah : 1,
-                        // dueDate: midNight + (dayToMemo * 86400000),
+                        ayah: x === 0 || !pagesRef[firstPageOfSurah + x - 1] ? 1 : pagesRef[firstPageOfSurah + x - 1].ayah,
                         dueDate: Date.now() + ((x*5) * 60000),
                         dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
                         lapses: 0,
@@ -7411,18 +7420,18 @@ class Dashboard extends Form {
         }
 
         console.log(cards)
-        return;
+        // return;
 
         firebase.firestore().collection("users").doc(userId).get()
         .then( doc => {
             const user = doc.data();
             console.log(user);
 
-            user.memos.push({
+            user.memo = {
                 target: target,
                 plan: plan,
                 cards: cards,
-            })
+            }
             console.log(user)
 
             firebase.firestore().collection("users").doc(userId).update(user);
@@ -7496,8 +7505,8 @@ class Dashboard extends Form {
 
     finishMemorizing = (cardId) => {
         const { user } = this.state;
-        const memos = this.state.userDetails.memos
-        let cards = memos[0].cards;
+        const memo = this.state.userDetails.memo
+        let cards = memo.cards;
         console.log(cardId)
         let card = cards[cardId - 1];
         console.log(card)
@@ -7506,16 +7515,16 @@ class Dashboard extends Form {
         console.log(card)
         
         card.interval = 24 * 3600000;
-        // card.dueDate = card.interval + Date.now();
-        card.dueDate = Date.now() + 2 * 60000;
+        card.dueDate = card.interval + Date.now();
+        // card.dueDate = Date.now() + 2 * 60000;
         card.dueDateInWords = new Date(card.dueDate).toString()
         card.intervalInDays = card.interval / 86400000
 
         cards[cardId - 1] = card;
-        memos[0].cards = cards;
+        memo.cards = cards;
 
         firebase.firestore().collection("users").doc(user.uid).update({
-            memos: memos
+            memo: memo
         }).then(() => {
             toast.success("Congratulations on your memorization. This page has been added to the review deck")
         })
@@ -7523,11 +7532,11 @@ class Dashboard extends Form {
 
     renderDueForMemo = () => {
         const { userDetails } = this.state;
-        if(userDetails && userDetails.memos.length > 0) {
-            console.log(userDetails.memos[0]);
-            const userMemos = userDetails.memos
+        if(userDetails && userDetails.memo) {
+            console.log(userDetails.memo);
+            const userMemo = userDetails.memo
         
-            const dueCards = userMemos[0].cards.filter(card => card.dueDate < Date.now() && card.phase === "memorizing");
+            const dueCards = userMemo.cards.filter(card => card.dueDate < Date.now() && card.phase === "memorizing");
             if(dueCards.length < 1) {
                 return (
                     <Grid item style={{ margin: "0 auto"}}>
@@ -7563,11 +7572,11 @@ class Dashboard extends Form {
 
     renderDueForReview = () => {
         const { userDetails } = this.state;
-        if(userDetails && userDetails.memos.length > 0) {
-            console.log(userDetails.memos[0]);
-            const userMemos = userDetails.memos
+        if(userDetails && userDetails.memo) {
+            console.log(userDetails.memo);
+            const userMemo = userDetails.memo
         
-            const dueCards = userMemos[0].cards.filter(card => card.dueDate < Date.now() && card.phase === "reviewing");
+            const dueCards = userMemo.cards.filter(card => card.dueDate < Date.now() && card.phase === "reviewing");
             if(dueCards.length < 1) {
                 return (
                     <Grid item style={{ margin: "0 auto"}}>
@@ -7602,8 +7611,8 @@ class Dashboard extends Form {
 
     setGood = (cardId) => {
         const { user } = this.state;
-        const memos = this.state.userDetails.memos
-        let cards = memos[0].cards;
+        const memo = this.state.userDetails.memo
+        let cards = memo.cards;
         let card = cards[cardId - 1];
         
         card.interval = card.interval * card.ease;
@@ -7614,10 +7623,10 @@ class Dashboard extends Form {
         card.dueDateInWords = new Date(card.dueDate).toString()
         
         cards[cardId - 1] = card;
-        memos[0].cards = cards;
+        memo.cards = cards;
 
         firebase.firestore().collection("users").doc(user.uid).update({
-            memos: memos
+            memo: memo
         }).then(() => {
             toast.success("This page has been rescheduled for review")
         })
@@ -7625,8 +7634,8 @@ class Dashboard extends Form {
 
     setAgain = (cardId) => {
         const { user } = this.state;
-        const memos = this.state.userDetails.memos
-        let cards = memos[0].cards;
+        const memo = this.state.userDetails.memo
+        let cards = memo.cards;
         let card = cards[cardId - 1];
 
         card.phase = "memorizing";
@@ -7637,7 +7646,7 @@ class Dashboard extends Form {
         card.dueDate = 0;
 
         firebase.firestore().collection("users").doc(user.uid).update({
-            memos: memos
+            memo: memo
         }).then(() => {
             toast.success("This page has been scheduled for re-memorization")
         })
@@ -7645,8 +7654,8 @@ class Dashboard extends Form {
 
     setHard = (cardId) => {
         const { user } = this.state;
-        const memos = this.state.userDetails.memos
-        let cards = memos[0].cards;
+        const memo = this.state.userDetails.memo
+        let cards = memo.cards;
         let card = cards[cardId - 1];
 
         card.ease = card.ease * 0.8
@@ -7664,7 +7673,7 @@ class Dashboard extends Form {
         card.dueDateInWords = new Date(card.dueDate).toString()
 
         firebase.firestore().collection("users").doc(user.uid).update({
-            memos: memos
+            memo: memo
         }).then(() => {
             toast.success("This page has been rescheduled for review")
         })
@@ -7672,8 +7681,8 @@ class Dashboard extends Form {
 
     setEasy = (cardId) => {
         const { user } = this.state;
-        const memos = this.state.userDetails.memos
-        let cards = memos[0].cards;
+        const memo = this.state.userDetails.memo
+        let cards = memo.cards;
         let card = cards[cardId - 1];
 
         card.ease = card.ease * 1.15;
@@ -7685,14 +7694,14 @@ class Dashboard extends Form {
         card.dueDateInWords = new Date(card.dueDate).toString()
 
         firebase.firestore().collection("users").doc(user.uid).update({
-            memos: memos
+            memo: memo
         }).then(() => {
             toast.success("This page has been rescheduled for review")
         })
     }
 
     render() { 
-        const { user, userMemos, data } = this.state;
+        const { user, userMemo, data } = this.state;
         
         return ( 
             <React.Fragment>
@@ -7736,7 +7745,7 @@ class Dashboard extends Form {
                         </Typography>
                     </Grid>
                     <Grid container>
-                        {userMemos && this.renderDueForMemo()}
+                        {userMemo && this.renderDueForMemo()}
                     </Grid>    
                 </Grid>
                 
@@ -7749,7 +7758,7 @@ class Dashboard extends Form {
                         </Typography>
                     </Grid>
                     <Grid container>
-                        {userMemos && this.renderDueForReview()}
+                        {userMemo && this.renderDueForReview()}
                     </Grid>    
                 </Grid>
             </React.Fragment>
