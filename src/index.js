@@ -33,7 +33,7 @@ ReactDOM.render(
       <ScrollToTop>
         <App />
       </ScrollToTop>
-    </BrowserRouter>,
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -43,7 +43,11 @@ class Dashboard extends Form {
         let userId = ""
         firebase.auth().onAuthStateChanged((user) => {
             this.setState({ user })
+            if(!user) {
+                window.location = "/home"
+            }
             userId = user.uid;
+
             
             firebase.firestore().collection("users").doc(userId).get()
             .then(doc => {
@@ -1046,27 +1050,30 @@ class Dashboard extends Form {
                 <Grid item container id="new-memorization" 
                 justify="center" alignItems="center" 
                 spacing={0} style={{ margin: "20px auto", width: "90%"}}>
+                    <Typography variant="h4" style={{marginBottom: "20px", textAlign: "center"}}>
+                        &#65021;
+                    </Typography>
 
-                        <div>
-                            <Button
-                            variant="outlined"
-                            color="primary"
-                            onClick={this.showStartNewMemo}
-                            size="small"
-                            >
-                                Start a New Hifz Plan {startNewMemo? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                            </Button>
-                            <Button
-                            variant="contained"
-                            color="secondary"
-                            size="small"
-                            onClick={this.ShowDeletePlanForm}
-                            style={{ margin: "10px", fontSize: "8px"}}
-                            >
-                                Delete Current Plan
-                            </Button>
+                    <div>
+                        <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={this.showStartNewMemo}
+                        size="small"
+                        >
+                            Start a New Hifz Plan {startNewMemo? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                        </Button>
+                        <Button
+                        variant="contained"
+                        color="secondary"
+                        size="small"
+                        onClick={this.ShowDeletePlanForm}
+                        style={{ margin: "10px", fontSize: "8px"}}
+                        >
+                            Delete Current Plan
+                        </Button>
 
-                        </div>
+                    </div>
                     <form onSubmit={this.createNewMemo}>
 
                         {startNewMemo && <div style={{ maxWidth: "85%", margin: "auto"}}>

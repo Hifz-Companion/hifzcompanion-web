@@ -7,6 +7,8 @@ import Footer from "./components/footer";
 import SignUp from './components/signUp';
 import Login from './components/login';
 import Dashboard from './components/dashboard';
+import Plans from './components/plans';
+import Contact from './components/contact';
 import "react-toastify/dist/ReactToastify.css";
 import './App.css';
 
@@ -21,6 +23,8 @@ function App() {
         <Route path="/sign-up" exact component={SignUp} />
         <Route path="/login" exact component={Login} />
         <Route path="/dashboard" exact component={Dashboard} />
+        <Route path="/plans" exact component={Plans} />
+        <Route path="/contact" exact component={Contact} />
 
         <Redirect from="/" exact to="/home" />
         <Redirect to="/not-found" />

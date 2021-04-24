@@ -12,34 +12,26 @@ class Footer extends Component {
   }
 
   render() {
-    // const { user } = this.state;
+    const { user } = this.state;
     return (
       <React.Fragment>
         <footer id="footer">
           <Grid container>
             <Grid item xs={6} sm={6} md={4}>
-              <a href="/privacy-policy">Privacy Policy</a>
+              <a href="/contact">Contact</a>
             </Grid>
             <br /><br />
             <Grid item xs={6} sm={6} md={4}>
-              <a href="/terms">Terms of Use</a>
+              <a href="/plans">Memorization Plans</a>
             </Grid>
             <br /><br />
-            <Grid item xs={6} sm={6} md={4}>
-              <a href="/questionbank">Question Bank</a>
-            </Grid>
+            {!user && <Grid item xs={6} sm={6} md={4}>
+              <a href="/sign-up">Create Account</a>
+            </Grid>}
             <br /><br />
-            <Grid item xs={6} sm={6} md={4}>
-              <a href="/osce">OSCE</a>
-            </Grid>
-            <br /><br />
-            <Grid item xs={6} sm={6} md={4}>
-              <a href="about">About Us</a>
-            </Grid>
-            <br /><br />
-            <Grid item xs={6} sm={6} md={4}>
-              <a href="contact">Contact Us</a>
-            </Grid>
+            {!user && <Grid item xs={6} sm={6} md={4}>
+              <a href="/login">Login</a>
+            </Grid>}
           </Grid>
         </footer>
       </React.Fragment>
