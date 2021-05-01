@@ -27,14 +27,43 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    // console.log("user id", user.uid);
+    const userId = user.uid;
+    const docRef = firebase.firestore().collection("users").doc(userId);
+
+    docRef
+      .get()
+      .then((doc) => {
+        console.log(doc.data())
+        if(doc.data() === undefined){
+          localStorage.setItem("currentUser", JSON.stringify({}));
+        } else {
+          localStorage.setItem("currentUser", JSON.stringify(doc.data()));
+        }
+        localStorage.setItem("currentUserId", userId);
+      })
+      .catch((error) => {
+        console.log("error getting document", error);
+      });
+    // ...
+  } else {
+    // User is signed out.
+    // console.log("user signed out");
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("currentUserId");
+  }
+});
+
 ReactDOM.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <BrowserRouter>
       <ScrollToTop>
         <App />
       </ScrollToTop>
-    </BrowserRouter>
-  </React.StrictMode>,
+    </BrowserRouter>,
+  // </React.StrictMode>,
   document.getElementById('root')
 );
 

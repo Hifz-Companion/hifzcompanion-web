@@ -82,8 +82,6 @@ class Form extends Component {
 
     return (
       <TextInputField
-        variant="outlined"
-        margin="normal"
         fullWidth
         autoFocus={autoFocus}
         id={name}
@@ -157,7 +155,10 @@ class Form extends Component {
           value={data[name]}
           onChange={this.handleChange}
           error={errors[name]}
-          input={<OutlinedInput name={name} id={options[0].id} />}
+          name={name}
+          id={options[0].id}
+          variant="standard"
+          // input={<OutlinedInput   />}
         >
           <option value="" />
           {options.map(option => (

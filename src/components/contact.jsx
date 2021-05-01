@@ -1,15 +1,26 @@
 import React, { Component } from 'react';
 import { Grid, Typography } from '@material-ui/core';
+// import Basmala from "../img/basmala.png";
+import { Helmet } from "react-helmet";
 
 class Contact extends Component {
     state = {  }
     render() { 
         return ( 
             <React.Fragment>
+                <Helmet>
+                    <title>Contact - Hifz Companion</title>
+                    <meta
+                        name="description"
+                        content="Contact the Hifz Companion Team."
+                    />
+                </Helmet>
+
+                <Grid container justify="center" 
+                    style={{ margin: "20px auto", fontSize: "40px", fontFamily: "Kitab"}}>
+                        بِسْمِ ٱللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ  
+                    </Grid>
                 <Grid item xs={10} style={{ margin: "10px auto"}}>
-                    <Typography variant="h4" style={{marginBottom: "20px", textAlign: "center"}}>
-                        &#65021;
-                    </Typography>
                     <Typography variant="body1">
                         <strong>Email: </strong>abdulwadudsab@gmail.com
                     </Typography>

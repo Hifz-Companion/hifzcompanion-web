@@ -1,15 +1,27 @@
 import React, { Component } from 'react';
 import { Grid, Typography } from '@material-ui/core';
+// import Basmala from "../img/basmala.png";
+import { Helmet } from "react-helmet";
 
 class Plans extends Component {
     state = {  }
     render() { 
         return ( 
             <React.Fragment>
+                <Helmet>
+                    <title>Memorization Plans - Hifz Companion</title>
+                    <meta
+                        name="description"
+                        content="Available Pans For Memorizing the Quran."
+                    />
+                </Helmet>
+
+                <Grid container justify="center" 
+                style={{ margin: "20px auto", fontSize: "40px", fontFamily: "Kitab"}}>
+                    بِسْمِ ٱللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ  
+                </Grid>
+
                 <Grid item xs={10} style={{ margin: "auto"}}>
-                    <Typography variant="h4" style={{margin: "10px auto", textAlign: "center"}}>
-                        &#65021;
-                    </Typography>
                     <Typography variant="h1" style={{margin: "20px", fontSize: "20px", textTransform: "uppercase", textAlign: "center"}}>
                         Quran Memorization Plans
                     </Typography>

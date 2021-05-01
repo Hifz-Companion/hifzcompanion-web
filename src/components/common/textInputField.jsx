@@ -5,7 +5,7 @@ import TextField from "@material-ui/core/TextField";
 const TextInputField = ({ error, ...rest }) => {
   return (
     <div>
-      <TextField {...rest} margin="normal" variant="outlined" />
+      <TextField {...rest} margin="normal" />
       {error && (
         <Typography color="secondary" component="p" variant="subtitle1">
           {error}

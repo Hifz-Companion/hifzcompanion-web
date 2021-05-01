@@ -85,7 +85,7 @@ class Login extends Form {
     return (
       <React.Fragment>
         <Helmet>
-          <title>Sign in - HifzulQuran</title>
+          <title>Sign in - Hifz Companion</title>
           <meta
             name="description"
             content="Login to continue memorizing the Quran."

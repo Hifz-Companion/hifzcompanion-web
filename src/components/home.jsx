@@ -2,6 +2,7 @@ import { Button, Grid, Typography } from '@material-ui/core';
 import React, { Component } from 'react';
 import { Helmet } from "react-helmet";
 import { Link } from 'react-router-dom';
+// import Basmala from "../img/basmala.png";
 
 
 class Home extends Component {
@@ -10,18 +11,19 @@ class Home extends Component {
         return ( 
             <React.Fragment>
                 <Helmet>
-                <title>Home - HifzulQuran</title>
+                <title>Home - Hifz Companion</title>
                 <meta
                     name="description"
-                    content="Login to continue memorizing the Quran."
+                    content="Quran Memorization and Lifelong Revision Companion."
                 />
                 </Helmet>
 
                 <Grid container>
+                    <Grid container justify="center" 
+                    style={{ margin: "20px auto", fontSize: "40px", fontFamily: "Kitab"}}>
+                        بِسْمِ ٱللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ  
+                    </Grid>
                     <Grid item xs={10} style={{ margin: "auto"}}>
-                        <Typography variant="h4" style={{margin: "20px auto", textAlign: "center"}}>
-                            &#65021;
-                        </Typography>
                         <Typography variant="h1" style={{margin: "20px", fontSize: "20px", textTransform: "uppercase", textAlign: "center"}}>
                             Quran Memorization and Lifelong Revision Companion
                         </Typography>
@@ -33,10 +35,10 @@ class Home extends Component {
                             First it helps you to memorize the Quran according to a suitable plan, 
                             and then it <strong>helps you to keep track of which pages or surahs you are supposed 
                             to be revising at any point</strong>. It does this using an algorithm built on 
-                            an memory efficient concept known as <strong>Spaced Repetion.</strong>
+                            an memory efficient concept known as <strong>Spaced Repetition.</strong>
                         </Typography>
                         <Typography variant="body1">
-                            Spaced repetition is an amazing technique to maximize recall after 
+                            Spaced repetition is an amazing technique used to maximize recall during 
                             memorization and avoid forgetting the memorized material.
                         </Typography>
                         <br/>
@@ -49,10 +51,10 @@ class Home extends Component {
                             <Link to="/sign-up"><Button color="secondary">Click Here</Button></Link>
                         </Typography>
                         <Typography variant="body1">
-                            <strong>Step 2:</strong> Select a Memorization Plan. 
+                            <strong>Step 2:</strong> Start a New Hifz Plan
                         </Typography>
                         <Typography variant="body1">
-                            <strong>Step 3:</strong> Check daily to see the pages or surah you are
+                            <strong>Step 3:</strong> Check Dashboard daily to see the pages or surah you are
                             supposed to memorise or revise.
                         </Typography>
                         <Typography variant="body1">
@@ -93,12 +95,17 @@ class Home extends Component {
                             some more time for a period of intensive revision with your Ustaz.
                         </Typography>
                         <Typography variant="body1">
-                            For every page that your memorize, <strong>the app reschedules that same page for revision at an 
+                            For every page that you memorize, <strong>the app reschedules that same page for revision at an 
                             appropriate interval</strong>, about some days later, And this is the more important part.                        
                         </Typography>
                         <Typography variant="body1">
                             To learn more about the details of each plan, 
                             <Link to="/plans"><Button color="secondary">Click Here</Button></Link>                         
+                        </Typography>
+                        <br/><br/>
+
+                        <Typography variant="body1">
+                            Quran meta data used in this app was obtained from <a target="_blank" rel="noreferrer" href="https://alquran.cloud/api">alquran.cloud</a>
                         </Typography>
                     </Grid>
                 </Grid>
@@ -109,19 +116,3 @@ class Home extends Component {
 }
  
 export default Home;
-
-// class Home extends Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {  }
-//     }
-//     render() { 
-//         return ( 
-//             <React.Fragment>
-//                 This is the home page
-//             </React.Fragment>
-//          );
-//     }
-// }
- 
-// export default Home;

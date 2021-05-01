@@ -86,9 +86,9 @@ const NavBar = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>
+      {/* <MenuItem onClick={handleMenuClose}>
         <Link to={`/my-profile/${currentUserId}/`}>My Profile</Link>
-      </MenuItem>
+      </MenuItem> */}
 
       {signedIn && (
         <Button color="secondary" onClick={logOutUser}>
@@ -100,7 +100,7 @@ const NavBar = () => {
 
   return (
     <div className={classes.grow}>
-      <AppBar position="static" color="secondary">
+      <AppBar position="static" style={{ backgroundColor: "#139537"}}>
         <Toolbar>
           <Link to="/">
             {/* <img src={logoFavicon} alt="Logo" height="35px" width="35px" style={{margin: "0 7px"}} /> */}
@@ -111,9 +111,9 @@ const NavBar = () => {
             id="navbar-brand"
             variant="h5"
             noWrap
-           style={{ color: "white" }}
+           style={{ color: "white", textDecoration: "none" }}
           >
-            Hifzul-Quran
+            Hifz Companion
           </Typography>
 
           <div className={classes.grow} />

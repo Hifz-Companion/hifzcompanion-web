@@ -75,7 +75,7 @@ class SignUp extends Form {
           this.setState({ submitting: !submitting });
           toast.success("Successfully Signed Up, Welcome!");
           setTimeout(() => {
-            window.location = prevPath || "/home";
+            window.location = prevPath || "/dashboard";
           }, 2000);
         });
     });
@@ -97,10 +97,10 @@ class SignUp extends Form {
     return (
       <React.Fragment>
         <Helmet>
-          <title>Sign Up - HifzulQuran</title>
+          <title>Sign Up - Hifz Companion</title>
           <meta
             name="description"
-            content="Sign up and get started on your journey to memorising the Quran"
+            content="Create an account and get started on your journey to memorising the Quran."
           />
         </Helmet>
         {submitting ? (

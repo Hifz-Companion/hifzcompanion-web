@@ -10,6 +10,9 @@ import { toast } from 'react-toastify';
 import { getQuranMeta } from '../utils/getMeta';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+// import Basmala from "../img/basmala.png";
+import PreLoader from "./common/preLoader";
+import { Helmet } from "react-helmet";
 
 
 class Dashboard extends Form {
@@ -26,7 +29,8 @@ class Dashboard extends Form {
         quranMeta: {},
         user: {},
         userMemo: [],
-        deleteConfText: ""
+        deleteConfText: "",
+        submitting: false,
      }
 
     schema = {
@@ -65,33 +69,42 @@ class Dashboard extends Form {
         this.setState({ startNewMemo: !startNewMemo, showDeletePlan: false });
     }
 
+    
     createNewMemo = (event) => {
+        //THIS FUNCTION CREATES A NEW MEMORIZATION PLAN. MEMO = MEMORIZATION
         event.preventDefault();
         const { user, userDetails } = this.state;
-        const { target, plan, juz, surah } = this.state.data;
+        const { target, plan, juz, surah } = this.state.data; //JUZ & SURAH REPRESENT THE JUZ & SURAH NUMBERS
         const { surahs, pages, juzs } = this.state.quranMeta;
         const surahsRef = surahs.references;
         const pagesRef = pages.references;
         const juzsRef = juzs.references;
         const userId = user.uid;
         let cards = [];
-        let dateNow = new Date();
-        dateNow.setUTCHours(0, 0, 0, 0);
-        const midNight = +dateNow;
+        let dateObj = new Date();
+        dateObj.setUTCHours(0, 0, 0, 0);
+        const midNight = +dateObj;
 
+
+        //CHECK TO MAKE SURE SURAH OR JUZ IS SELECTED IF TARGET IS SURAH
         if(target === "juz" && !juz) {
             toast.error("You must choose a juz");
+            
             return;
         } else if(target === "surah" && !surah) {
             toast.error("You must choose a surah");
+            
             return;
         }
 
+        //ENSURE USER DOESNT CREATE A NEW PLAN WHEN THEY ALREADY HAVE AN ONGOING ENTIRE QURAN PLAN.
         if(userDetails.memo && userDetails.memo.target === "quran") {
             toast.error("You already have an ongoing entire Quran memorization plan. You have to delete that plan in order to add a new plan")
+            
             return;
         } else if(userDetails.memo && userDetails.memo.target !== "quran" && userDetails.memo.target !== target) {
             toast.error(`You are currently on the ${userDetails.memo.target} plan. You may not add a different plan type unless you delete the current plan`);
+            
             return;
         } else if(userDetails.memo && userDetails.memo.target !== "quran" && userDetails.memo.target === target) {
             let cards = userDetails.memo.cards;
@@ -109,7 +122,7 @@ class Dashboard extends Form {
                     return;
                 }
                 if(juzList.includes(Number(juz))){
-                    toast.error("You have already memorized this juz")
+                    toast.error("You have already memorized this juz")            
                     return;
                 }
             } else if (userDetails.memo.target === "surah") {
@@ -123,10 +136,14 @@ class Dashboard extends Form {
                 }
                 if(unMemorizedCards.length > 0 ) {
                     toast.error("You cannot add a new surah as you have not completed the previous surah yet.")
+            
+                    
                     return;
                 }
                 if(surahList.includes(surah)){
                     toast.error("You have already memorized this surah")
+            
+                    
                     return;
                 }
             }
@@ -350,6 +367,24 @@ class Dashboard extends Form {
                 if(pagesRef[i].surah === juzsRef[juz-1].surah && pagesRef[i].ayah === juzsRef[juz-1].ayah) {
                     firstPageOfJuz = i+1;
                 }
+            }
+
+            //JUZ 4,7,11 AND 26 ARE MISBEHAVING, I WILL SET THEIR FIRST PAGE MANUALLY AND CHECK IT LATER
+            switch(juz) {
+                case "4":
+                    firstPageOfJuz = 62;
+                    break;
+                case "7":
+                    firstPageOfJuz = 122;
+                    break;
+                case "11":
+                    firstPageOfJuz = 202;
+                    break;
+                case "26":
+                    firstPageOfJuz = 502;
+                    break;
+                default:
+                    firstPageOfJuz = firstPageOfJuz + 0;
             }
 
             
@@ -603,7 +638,8 @@ class Dashboard extends Form {
                         surah: {id: surah, name: surahsRef[surah-1].englishName },
                         juz: target === "juz"? Number(juz) : "",
                         ayah: x === 0 || !pagesRef[firstPageOfSurah + x - 1] ? 1 : pagesRef[firstPageOfSurah + x - 1].ayah,
-                        dueDate: Date.now() + ((x*5) * 60000),
+                        dueDate: midNight + (dayToMemo * 86400000),
+                        // dueDate: Date.now() + ((x*5) * 60000),
                         dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
                         lapses: 0,
                         interval: 1,
@@ -624,7 +660,7 @@ class Dashboard extends Form {
                         title: `${surah}. ${surahsRef[surah-1].englishName}, Page ${x+1}`,
                         surah: {id: surah, name: surahsRef[surah-1].englishName },
                         juz: target === "juz"? Number(juz) : "",
-                        ayah: pagesRef[firstPageOfSurah + x - 1] ? pagesRef[firstPageOfSurah + x - 1].ayah : 1,
+                        ayah: x === 0 || !pagesRef[firstPageOfSurah + x - 1] ? 1 : pagesRef[firstPageOfSurah + x - 1].ayah,
                         dueDate: midNight + ((x+1) * 86400000),
                         // dueDate: Date.now() + ((x*2) * 60000),
                         dueDateInWords: new Date(midNight + ((x+1) * 86400000)).toString(),
@@ -658,7 +694,7 @@ class Dashboard extends Form {
                         title: `${surah}. ${surahsRef[surah-1].englishName}, Page ${x+1}`,
                         surah: {id: surah, name: surahsRef[surah-1].englishName },
                         juz: target === "juz"? Number(juz) : "",
-                        ayah: pagesRef[firstPageOfSurah + x - 1] ? pagesRef[firstPageOfSurah + x - 1].ayah : 1,
+                        ayah: x === 0 || !pagesRef[firstPageOfSurah + x - 1] ? 1 : pagesRef[firstPageOfSurah + x - 1].ayah,
                         dueDate: midNight + (dayToMemo * 86400000),
                         // dueDate: Date.now() + ((x*5) * 60000),
                         dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
@@ -695,7 +731,7 @@ class Dashboard extends Form {
                         title: `${surah}. ${surahsRef[surah-1].englishName}, Page ${x+1}`,
                         surah: {id: surah, name: surahsRef[surah-1].englishName },
                         juz: target === "juz"? Number(juz) : "",
-                        ayah: pagesRef[firstPageOfSurah + x - 1] ? pagesRef[firstPageOfSurah + x - 1].ayah : 1,
+                        ayah: x === 0 || !pagesRef[firstPageOfSurah + x - 1] ? 1 : pagesRef[firstPageOfSurah + x - 1].ayah,
                         dueDate: midNight + (dayToMemo * 86400000),
                         // dueDate: Date.now() + ((x*5) * 60000),
                         dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
@@ -712,6 +748,10 @@ class Dashboard extends Form {
 
         }
 
+        //Launch the preloader while submitting
+        const submitting = this.state.submitting;
+        this.setState({ submitting: !submitting });
+
         console.log(cards)
         // return;
 
@@ -727,13 +767,15 @@ class Dashboard extends Form {
                 user.memo = {
                     target: target,
                     plan: plan,
-                    cards: cards
+                    cards: cards,
+                    startDate: Date.now(),
                 }
             } else {
                 user.memo = {
                     target: target,
                     plan: plan,
                     cards: cards,
+                    startDate: Date.now(),
                 }
             }
 
@@ -742,13 +784,29 @@ class Dashboard extends Form {
 
             firebase.firestore().collection("users").doc(userId).update(user)
             .then(() => {
+                const submitting = this.state.submitting;
+                this.setState({ submitting: !submitting });   
+
+                firebase.firestore().collection("statistics").doc("statsdata").update({
+                    memoCount: firebase.firestore.FieldValue.increment(1)
+                }).then(()=> {
+                    console.log("Memo count updated successfully");
+                })
+
                 // console.log("Updated user successfully");
                 toast.success("Your hifz plan has been created. Your first page will appear tomorrow in shaa Allah");
-                this.setState({ startNewMemo: false })
+                this.setState({ startNewMemo: false, target: "", plan: "", surah: "", juz: "" })
+
             }).catch(error => {
+                const submitting = this.state.submitting;
+                this.setState({ submitting: !submitting });
+
                 console.log(error.message);
             })
         }).catch(error => {
+            const submitting = this.state.submitting;
+            this.setState({ submitting: !submitting });
+
             console.log(error.message);
         })
     } 
@@ -822,7 +880,7 @@ class Dashboard extends Form {
         console.log(card)
 
         card.phase = "reviewing";
-        console.log(card)
+        // console.log(card)
         
         card.interval = 24 * 3600000;
         card.dueDate = card.interval + Date.now();
@@ -842,6 +900,15 @@ class Dashboard extends Form {
 
     renderDueForMemo = () => {
         const { userDetails } = this.state;
+
+        if(userDetails && !userDetails.memo) {
+            return (
+                <Grid item style={{ margin: "0 auto"}}>
+                    You have no ongoing memorization plan. Create a Plan to see pages.
+                </Grid>    
+            )
+        }
+
         if(userDetails && userDetails.memo) {
             // console.log(userDetails.memo);
             const userMemo = userDetails.memo
@@ -882,6 +949,15 @@ class Dashboard extends Form {
 
     renderDueForReview = () => {
         const { userDetails } = this.state;
+
+        if(userDetails && !userDetails.memo) {
+            return (
+                <Grid item style={{ margin: "0 auto"}}>
+                    You have no ongoing memorization plan. Create a Plan to see pages.
+                </Grid>    
+            )
+        }
+
         if(userDetails && userDetails.memo) {
             const userMemo = userDetails.memo
         
@@ -937,7 +1013,7 @@ class Dashboard extends Form {
         firebase.firestore().collection("users").doc(user.uid).update({
             memo: memo
         }).then(() => {
-            toast.success("This page has been rescheduled for review")
+            toast.success("This page has been rescheduled for revision")
         })
     }
 
@@ -969,7 +1045,7 @@ class Dashboard extends Form {
 
         card.ease = card.ease * 0.8
         let newInterval = card.interval * card.ease
-        if(newInterval > 1.2) {
+        if(newInterval > 1.2 * 86400000) {
             card.interval = newInterval
         } else {
             card.interval = card.interval * 1.2
@@ -984,7 +1060,7 @@ class Dashboard extends Form {
         firebase.firestore().collection("users").doc(user.uid).update({
             memo: memo
         }).then(() => {
-            toast.success("This page has been rescheduled for review")
+            toast.success("This page has been rescheduled for revision")
         })
     }
 
@@ -1005,7 +1081,7 @@ class Dashboard extends Form {
         firebase.firestore().collection("users").doc(user.uid).update({
             memo: memo
         }).then(() => {
-            toast.success("This page has been rescheduled for review")
+            toast.success("This page has been rescheduled for revision")
         })
     }
 
@@ -1030,11 +1106,24 @@ class Dashboard extends Form {
         delete userDetails.memo;
         console.log(userDetails);
 
+        //Launch the preloader while submitting
+        const submitting = this.state.submitting;
+        this.setState({ submitting: !submitting });
+
         firebase.firestore().collection("users").doc(user.uid).update({
             memo: firebase.firestore.FieldValue.delete()
         }).then(() => {
             toast.success("Your current plan has been deleted")
+
+            const submitting = this.state.submitting;
+            this.setState({ submitting: !submitting });
+            
             this.setState({ showDeletePlan: false})
+        }).catch(error => {
+            console.log(error.message);
+
+            const submitting = this.state.submitting;
+            this.setState({ submitting: !submitting });
         })
     }
 
@@ -1043,97 +1132,110 @@ class Dashboard extends Form {
     }
 
     render() { 
-        const { userMemo, data, startNewMemo, deleteConfText } = this.state;
+        const { userMemo, data, startNewMemo, deleteConfText, submitting } = this.state;
         
         return ( 
             <React.Fragment>
-                <Grid item container id="new-memorization" 
-                justify="center" alignItems="center" 
-                spacing={0} style={{ margin: "20px auto", width: "90%"}}>
-                    <Typography variant="h4" style={{marginBottom: "20px", textAlign: "center"}}>
-                        &#65021;
-                    </Typography>
+                <Helmet>
+                    <title>Dashboard - Hifz Companion</title>
+                    <meta
+                        name="description"
+                        content="Track your Quran Memorization Progress"
+                    />
+                </Helmet>
 
-                    <div>
-                        <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={this.showStartNewMemo}
-                        size="small"
-                        >
-                            Start a New Hifz Plan {startNewMemo? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                        </Button>
-                        <Button
-                        variant="contained"
-                        color="secondary"
-                        size="small"
-                        onClick={this.ShowDeletePlanForm}
-                        style={{ margin: "10px", fontSize: "8px"}}
-                        >
-                            Delete Current Plan
-                        </Button>
+                {submitting? (
+                    <PreLoader />
+                ) : (<div>
+                    <Grid container justify="center" 
+                    style={{ margin: "20px auto", fontSize: "40px", fontFamily: "Kitab"}}>
+                        بِسْمِ ٱللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ  
+                    </Grid>
+                    <Grid container id="new-memorization" 
+                    justify="center" alignItems="center" 
+                    spacing={0} style={{ margin: "20px auto", width: "90%"}}>
+                        <div>
+                            <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={this.showStartNewMemo}
+                            size="small"
+                            >
+                                Start a New Hifz Plan {startNewMemo? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                            </Button>
+                            <Button
+                            variant="contained"
+                            color="secondary"
+                            size="small"
+                            onClick={this.ShowDeletePlanForm}
+                            style={{ margin: "10px", fontSize: "8px"}}
+                            >
+                                Delete Current Plan
+                            </Button>
 
-                    </div>
-                    <form onSubmit={this.createNewMemo}>
+                        </div>
+                        <form onSubmit={this.createNewMemo}>
 
-                        {startNewMemo && <div style={{ maxWidth: "85%", margin: "auto"}}>
-                        {this.renderSelect(
-                            "target",
-                            "Choose Target",
-                            this.targets
-                        )}
-                        {this.renderTargetDetails()}
-                        {data.target && this.renderSelect(
-                            "plan",
-                            "Choose Plan",
-                            this.plans()
+                            {startNewMemo && <div style={{ maxWidth: "85%", margin: "auto"}}>
+                            {this.renderSelect(
+                                "target",
+                                "Choose Target",
+                                this.targets
                             )}
-                        {this.renderSubmitButton("Create My Plan")}
-                        </div>}
-                    </form>
-                    {this.state.showDeletePlan && 
-                    <div style={{ margin: "20px auto", width: "80%"}}>
-                        <form onSubmit={this.doDeleteCurrentPlan}>
-                            <Typography variant="body1">
-                                Are you sure you want to delete the current plan. You will not 
-                                see any more of your memorization pages and you will not be 
-                                given any pages to review. If you still want to proceed, 
-                                type "delete" in the text area below and click on "DELETE PLAN".
-                            </Typography>
-                            <input type="text" placeholder="delete" value={deleteConfText} onChange={this.handleConfTextChange} style={{ width: "80%", fontSize: "20px", margin: "20px auto"}} />
-                            <br />
-                            <Button type="submit" variant="contained" color="secondary" size="small">Delete Plan</Button>
-                            <Button variant="outlined" size="small" style={{ marginLeft: "20px"}} onClick={this.ShowDeletePlanForm}>Cancel</Button>
+                            {this.renderTargetDetails()}
+                            {data.target && this.renderSelect(
+                                "plan",
+                                "Choose Plan",
+                                this.plans()
+                                )}
+                            {this.renderSubmitButton("Create My Plan")}
+                            </div>}
                         </form>
-                    </div>
-                    }
-                </Grid>
+                        {this.state.showDeletePlan && 
+                        <div style={{ margin: "20px auto", width: "80%"}}>
+                            <form onSubmit={this.doDeleteCurrentPlan}>
+                                <Typography variant="body1">
+                                    Are you sure you want to delete the current plan. You will not 
+                                    see any more of your memorization pages and you will not be 
+                                    given any pages to review. If you still want to proceed, 
+                                    type "delete" in the text area below and click on "DELETE PLAN".
+                                </Typography>
+                                <input type="text" placeholder="delete" value={deleteConfText} onChange={this.handleConfTextChange} style={{ width: "80%", fontSize: "20px", margin: "20px auto"}} />
+                                <br />
+                                <Button type="submit" variant="contained" color="secondary" size="small">Delete Plan</Button>
+                                <Button variant="outlined" size="small" style={{ marginLeft: "20px"}} onClick={this.ShowDeletePlanForm}>Cancel</Button>
+                            </form>
+                        </div>
+                        }
+                    </Grid>
 
-                <Grid item id="due-for-memorizing"
-                style={{ marginTop: "30px"}}
-                >
-                    <Grid style={{ textAlign: "center"}}>
-                        <Typography variant="h6">
-                            Due for Memorizing
-                        </Typography>
+                    <Grid item id="due-for-memorizing"
+                    style={{ margin: "30px 10px"}}
+                    >
+                        <Grid style={{ textAlign: "center"}}>
+                            <Typography variant="h6">
+                                Due for Memorizing
+                            </Typography>
+                        </Grid>
+                        <Grid container>
+                            {userMemo && this.renderDueForMemo()}
+                        </Grid>    
                     </Grid>
-                    <Grid container>
-                        {userMemo && this.renderDueForMemo()}
-                    </Grid>    
-                </Grid>
-                
-                <Grid item id="due-for-review"
-                style={{ marginTop: "50px"}}
-                >
-                    <Grid style={{ textAlign: "center"}}>
-                        <Typography variant="h6">
-                            Due for Review
-                        </Typography>
+                    
+                    <Grid item id="due-for-review"
+                    style={{ margin: "50px 10px"}}
+                    >
+                        <Grid style={{ textAlign: "center"}}>
+                            <Typography variant="h6">
+                                Due for Revision
+                            </Typography>
+                        </Grid>
+                        <Grid container>
+                            {userMemo && this.renderDueForReview()}
+                        </Grid>    
                     </Grid>
-                    <Grid container>
-                        {userMemo && this.renderDueForReview()}
-                    </Grid>    
-                </Grid>
+                </div>
+                )}
             </React.Fragment>
          );
     }

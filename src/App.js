@@ -9,6 +9,7 @@ import Login from './components/login';
 import Dashboard from './components/dashboard';
 import Plans from './components/plans';
 import Contact from './components/contact';
+import ForgotPassword from './components/forgotPassword';
 import "react-toastify/dist/ReactToastify.css";
 import './App.css';
 
@@ -25,6 +26,7 @@ function App() {
         <Route path="/dashboard" exact component={Dashboard} />
         <Route path="/plans" exact component={Plans} />
         <Route path="/contact" exact component={Contact} />
+        <Route path="/forgot-password" exact component={ForgotPassword} />
 
         <Redirect from="/" exact to="/home" />
         <Redirect to="/not-found" />
