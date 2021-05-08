@@ -54,7 +54,7 @@ class Contact extends Component {
                     </Typography>
                     <Typography variant="body1">
                         If you are a programmer and you would like to contribute, you can check out 
-                        our <a href="https://www.github.com/doctorduudu/hifzulquran">Github here.</a> 
+                        our <a href="https://github.com/Hifz-Companion/">Github here.</a> 
                         Feel free to also use the concept we have applied here to develop other 
                         apps for the Muslim Ummah.
                     </Typography>

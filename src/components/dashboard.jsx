@@ -395,9 +395,9 @@ class Dashboard extends Form {
                         id: x+1,
                         pageNo: firstPageOfJuz + x,
                         title: `Juz ${juz}, Page ${x+1}`,
-                        surah: {id: juzsRef[x].surah, name: surahsRef[juzsRef[x].surah -1].englishName },
+                        surah: {id: pagesRef[firstPageOfJuz + x-1].surah, name: surahsRef[pagesRef[firstPageOfJuz + x-1].surah -1].englishName },
                         juz: target === "juz"? Number(juz) : "",
-                        ayah: juzsRef[x].ayah,
+                        ayah: pagesRef[firstPageOfJuz + x-1].ayah,
                         dueDate: midNight + (dayToMemo * 86400000),
                         // dueDate: Date.now() + ((x*5) * 60000),
                         dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
@@ -418,9 +418,9 @@ class Dashboard extends Form {
                         id: x+1,
                         pageNo: firstPageOfJuz + x,
                         title: `Juz ${juz}, Page ${x+1}`,
-                        surah: {id: juzsRef[x].surah, name: surahsRef[juzsRef[x].surah -1].englishName },
+                        surah: {id: pagesRef[firstPageOfJuz + x-1].surah, name: surahsRef[pagesRef[firstPageOfJuz + x-1].surah -1].englishName },
                         juz: target === "juz"? Number(juz) : "",
-                        ayah: juzsRef[x].ayah,
+                        ayah: pagesRef[firstPageOfJuz + x-1].ayah,
                         dueDate: midNight + ((x+1) * 86400000),
                         // dueDate: Date.now() + ((x*2) * 60000),
                         dueDateInWords: new Date(midNight + ((x+1) * 86400000)).toString(),
@@ -452,9 +452,9 @@ class Dashboard extends Form {
                         id: x+1,
                         pageNo: firstPageOfJuz + x,
                         title: `Juz ${juz}, Page ${x+1}`,
-                        surah: {id: juzsRef[x].surah, name: surahsRef[juzsRef[x].surah -1].englishName },
+                        surah: {id: pagesRef[firstPageOfJuz + x-1].surah, name: surahsRef[pagesRef[firstPageOfJuz + x-1].surah -1].englishName },
                         juz: target === "juz"? Number(juz) : "",
-                        ayah: juzsRef[x].ayah,
+                        ayah: pagesRef[firstPageOfJuz + x-1].ayah,
                         dueDate: midNight + (dayToMemo * 86400000),
                         // dueDate: Date.now() + ((x*5) * 60000),
                         dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
@@ -486,9 +486,9 @@ class Dashboard extends Form {
                         id: x+1,
                         pageNo: firstPageOfJuz + x,
                         title: `Juz ${juz}, Page ${x+1}`,
-                        surah: {id: juzsRef[x].surah, name: surahsRef[juzsRef[x].surah -1].englishName },
+                        surah: {id: pagesRef[firstPageOfJuz + x-1].surah, name: surahsRef[pagesRef[firstPageOfJuz + x-1].surah -1].englishName },
                         juz: target === "juz"? Number(juz) : "",
-                        ayah: juzsRef[x].ayah,
+                        ayah: pagesRef[firstPageOfJuz + x-1].ayah,
                         dueDate: midNight + (dayToMemo * 86400000),
                         // dueDate: Date.now() + ((x*5) * 60000),
                         dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
@@ -531,9 +531,9 @@ class Dashboard extends Form {
                         id: x+1,
                         pageNo: firstPageOfJuz + x,
                         title: `Juz ${juz}, Page ${x+1}`,
-                        surah: {id: juzsRef[x].surah, name: surahsRef[juzsRef[x].surah -1].englishName },
+                        surah: {id: pagesRef[firstPageOfJuz + x-1].surah, name: surahsRef[pagesRef[firstPageOfJuz + x-1].surah -1].englishName },
                         juz: target === "juz"? Number(juz) : "",
-                        ayah: juzsRef[x].ayah,
+                        ayah: pagesRef[firstPageOfJuz + x-1].ayah,
                         dueDate: midNight + (dayToMemo * 86400000),
                         // dueDate: Date.now() + ((x*5) * 60000),
                         dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
@@ -568,9 +568,9 @@ class Dashboard extends Form {
                         id: x+1,
                         pageNo: firstPageOfJuz + x,
                         title: `Juz ${juz}, Page ${x+1}`,
-                        surah: {id: juzsRef[x].surah, name: surahsRef[juzsRef[x].surah -1].englishName },
+                        surah: {id: pagesRef[firstPageOfJuz + x-1].surah, name: surahsRef[pagesRef[firstPageOfJuz + x-1].surah -1].englishName },
                         juz: target === "juz"? Number(juz) : "",
-                        ayah: juzsRef[x].ayah,
+                        ayah: pagesRef[firstPageOfJuz + x-1].ayah,
                         dueDate: midNight + (dayToMemo * 86400000),
                         // dueDate: Date.now() + ((x*5) * 60000),
                         dueDateInWords: new Date(midNight + (dayToMemo * 86400000)).toString(),
@@ -590,7 +590,7 @@ class Dashboard extends Form {
             const { surah } = this.state.data;
             const surahPagesList = pagesRef.filter(page => page.surah === Number(surah));
             let surahPages = surahPagesList.length;
-            console.log(surahPages)
+            // console.log(surahPages)
             let firstPageOfSurah;
 
             if(surahPagesList.length === 0) {
@@ -599,10 +599,10 @@ class Dashboard extends Form {
                     for(let i=0; i<pagesRef.length; i++) {
                         if(pagesRef[i].surah === surah-2) {
                             firstPageOfSurah = i+1;
-                            console.log(firstPageOfSurah)
+                            // console.log(firstPageOfSurah)
                         } else if(pagesRef[i].surah === surah-1) {
                             firstPageOfSurah = i+1;
-                            console.log(firstPageOfSurah)
+                            // console.log(firstPageOfSurah)
                         }
                     }
                 } 
@@ -612,14 +612,14 @@ class Dashboard extends Form {
                     for(let i=0; i<pagesRef.length; i++) {
                         if(pagesRef[i].surah === surahPagesList[0].surah && pagesRef[i].ayah === surahPagesList[0].ayah) {
                             firstPageOfSurah = i;
-                            console.log(firstPageOfSurah)
+                            // console.log(firstPageOfSurah)
                         }
                     }
                 } else {
                     for(let i=0; i<pagesRef.length; i++) {
                         if(pagesRef[i].surah === surahPagesList[0].surah && pagesRef[i].ayah === surahPagesList[0].ayah) {
                             firstPageOfSurah = i+1;
-                            console.log(firstPageOfSurah)
+                            // console.log(firstPageOfSurah)
                         }
                     }
                 }

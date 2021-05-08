@@ -46,6 +46,7 @@ class Home extends Component {
                         <Typography variant="h1" style={{margin: "5px auto", fontSize: "20px", textTransform: "uppercase", textAlign: "center"}}>
                             How To Use The App
                         </Typography>
+                        {/* <iframe id="youtube-frame" src="https://www.youtube.com/embed/5U0Ive8bnuo" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe> */}
                         <Typography variant="body1">
                             <strong>Step 1:</strong> Create an account. 
                             <Link to="/sign-up"><Button color="secondary">Click Here</Button></Link>
@@ -80,7 +81,7 @@ class Home extends Component {
                         </Typography>
                         <br/>
                         <Typography variant="body1">
-                            You can watch the video above for more details and better understanding of how to
+                            You can watch <a href="https://youtu.be/5U0Ive8bnuo" target="_blank" rel="noreferrer"> this video</a> for more details and better understanding of how to
                             use the app and how it works.
                         </Typography>
                         <br/>
@@ -89,6 +90,7 @@ class Home extends Component {
                         <Typography variant="h1" style={{margin: "5px auto", fontSize: "20px", textTransform: "uppercase", textAlign: "center"}}>
                             How The App Works
                         </Typography>
+                        
                         <Typography variant="body1">
                             Depending on the memorization plan you selected, the app automatically spaces the pages
                             of the quran for you to memorize and complete it within the expected time while leaving
